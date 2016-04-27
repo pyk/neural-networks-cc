@@ -20,9 +20,11 @@ int main()
     std::cout << "Gate x*y for x=-2 y=3: ";
     double x = -2;
     double y = 3;
-    std::cout << forwardMultiplyGate(x, y) << "\n";
+    double output = forwardMultiplyGate(x,y);
+    std::cout << output << "\n";
 
-    /* strategy #1: Random Local Search */
+    /* Strategy #1: Random Local Search */
+    std::cout << "\nStrategy #1: Random Local Search\n";
     double tweak_amount = 0.01;
     double best_out = -std::numeric_limits<double>::infinity();
     double best_x = x;
@@ -43,5 +45,30 @@ int main()
     }
     std::cout << "Best out: " << best_out;
     std::cout << ". with x = " << best_x << " and y = " << best_y << "\n";
+
+    /* Strategy #2: Numerical gradient */
+    std::cout << "\nStrategy #2: Numerical gradient\n";
+    double h = 0.00001;
+    /* Compute derivative with respect to x */
+    double xph = x + h;
+    double fxph = forwardMultiplyGate(xph, y);
+    /* derivative with respect to x */
+    double dwrtx = (fxph - output)/h;
+    std::cout << "drwtx: " << dwrtx << "\n";
+
+    /* Compute derivative with respect to y */
+    double yph = y + h;
+    double fyph = forwardMultiplyGate(x, yph);
+    /* derivative with respect to y */
+    double dwrty = (fyph - output)/h;
+    std::cout << "dwrty: " << dwrty << "\n";
+
+    /* walkthrough the gradient */
+    double step_size = 0.001;
+    double xg1 = x + step_size * dwrtx;
+    double yg1 = y + step_size * dwrty;
+    double outputg1 = forwardMultiplyGate(xg1, yg1);
+    std::cout << "outputg1: " << outputg1 << "\n";
+
 
 }
